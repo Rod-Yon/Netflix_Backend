@@ -17,6 +17,10 @@ const api_controller = {
         return api_fetch(`movie/popular`);
     },
 
+    async get_newest_movies() {
+        return api_fetch(`movie/now_playing`);
+    },
+
     async get_movies_genres() {
         return api_fetch(`genre/movie/list`);
     },
@@ -31,6 +35,10 @@ const api_controller = {
 
     async get_popular_shows() {
         return api_fetch(`tv/popular`);
+    },
+
+    async get_newest_shows() {
+        return api_fetch(`tv/now_playing`);
     },
 
     async get_shows_genres() {
