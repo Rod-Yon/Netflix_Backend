@@ -9,6 +9,7 @@ const port = process.env.PORT || 8080;
 
 const { authorization_router } = require('./routers/authorization_router');
 const { profile_router } = require('./routers/profile_router');
+const { media_router } = require('./routers/media_router');
 
 const app = express();
 
@@ -39,6 +40,7 @@ app.use(cors({
 
 app.use('/', authorization_router);
 app.use('/profiles', profile_router);
+app.use('/media', media_router);
 
 
 app.listen(port, () => {
