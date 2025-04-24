@@ -16,6 +16,20 @@ const profile_controller = {
         }
     },
 
+    async get_profile_by_id(req, res) {
+
+        const profile_id = req.params.profile_id;
+
+        try {
+            const profile = await Profile.findOne({ profile_id: profile_id });
+            res.status(200).json(profile);
+
+        } catch (error) {
+            console.error('Error fetching profile:', error);
+            res.status(500).json({ error: 'Failed to fetch profile' });
+        }
+    },
+
     async create_new_profile(req, res) {
 
         const username = req.params.username;
