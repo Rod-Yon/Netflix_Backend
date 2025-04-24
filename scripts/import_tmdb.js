@@ -3,8 +3,7 @@ dotenv.config();
 
 import fetch from 'node-fetch';
 import mongoose from 'mongoose';
-import pkg from '../models/media.js';
-const { Media } = pkg;
+import Media from '../models/media.js';
 
 const TMDB_API_KEY = process.env.API_KEY;
 const BASE_URL = 'https://api.themoviedb.org/3';
@@ -20,12 +19,24 @@ const endpoints = [
 
 async function fetchAndSaveMedia({ type, category }) {
     const mediaType = type === 'Movie' ? 'movie' : 'tv';
-    const url = `${BASE_URL}/${mediaType}/${category}?api_key=${TMDB_API_KEY}&language=en-US&page=1`;
+    const pageLimit = 3;
+    const collectedItems = [];
 
     try {
-        const response = await fetch(url);
-        const data = await response.json();
-        const items = data.results.slice(0, 50);
+        for (let page = 1; page <= pageLimit; page++) {
+            const url = `${BASE_URL}/${mediaType}/${category}?api_key=${TMDB_API_KEY}&language=en-US&page=${page}`;
+            const response = await fetch(url);
+            const data = await response.json();
+
+            if (!data.results) {
+                console.warn(`No results for ${type} - ${category} on page ${page}`);
+                break;
+            }
+
+            collectedItems.push(...data.results);
+        }
+
+        const items = collectedItems.slice(0, 50);
 
         for (const item of items) {
             const exists = await Media.findOne({ tmdb_id: item.id, type });
@@ -43,7 +54,7 @@ async function fetchAndSaveMedia({ type, category }) {
             await mediaDoc.save();
         }
 
-        console.log(`✓ Saved 50 ${type.toLowerCase()}s from ${category}`);
+        console.log(`✓ Saved ${items.length} ${type.toLowerCase()}s from ${category}`);
     } catch (error) {
         console.error(`✗ Failed fetching ${type} - ${category}:`, error.message);
     }
