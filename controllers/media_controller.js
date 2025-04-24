@@ -65,18 +65,28 @@ const media_controller = {
         }
     },
 
+    async get_newest_movie() {
+        return await Media.findOne({ type: 'Movie' }).sort({ createdAt: -1 }).exec();
+    },
+
+    async get_newest_show() {
+        return await Media.findOne({ type: 'Show' }).sort({ createdAt: -1 }).exec();
+    },
+
     async get_all_media(req, res) {
 
-        try {
+        // try {
 
-            const media = await Media.find();
-            res.status(200).json(media);
+        //     const media = await Media.find();
+        //     res.status(200).json(media);
 
-        } catch (error) {
+        // } catch (error) {
 
-            console.error('Error fetching media:', error);
-            res.status(500).json({ error: 'Failed to fetch media' });
-        }
+        //     console.error('Error fetching media:', error);
+        //     res.status(500).json({ error: 'Failed to fetch media' });
+        // }
+
+        return await Media.find();
     },
 
     async get_media_by_id(req, res) {

@@ -6,7 +6,8 @@ const media_schema = new Schema({
     name: { type: String, required: true },
     poster_path: { type: String, required: true },
     description: { type: String, required: true },
-    reviews: { type: [{ type: Schema.Types.ObjectId, ref: 'Review' }], required: true, default: [] }
+    reviews: { type: [{ type: Schema.Types.ObjectId, ref: 'Review' }], required: true, default: [] },
+    date: { type: Date, default: Date.now }
 }, { collection: "Medias" });
 
 const Media = model('Media', media_schema);
