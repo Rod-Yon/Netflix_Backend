@@ -5,14 +5,16 @@ const get_data = async (media) => {
     const { tmdb_id, type } = media;
 
     try {
-        let main_info, cast_data;
+        let main_info, cast_data, episodes;
 
         if (type === 'Movie') {
             main_info = await api_controller.get_movie(tmdb_id);
             cast_data = await api_controller.get_movie_cast(tmdb_id);
+            episodes = [];
         } else if (type === 'Show') {
             main_info = await api_controller.get_show(tmdb_id);
             cast_data = await api_controller.get_show_cast(tmdb_id);
+            episodes = await api_controller.get_show_episodes(tmdb_id);
         } else {
             return null;
         }
@@ -21,7 +23,9 @@ const get_data = async (media) => {
 
         return {
             main_info,
-            cast: cast_names
+            cast: cast_names,
+            type,
+            episodes
         };
 
     } catch (err) {
@@ -164,6 +168,38 @@ const home_controller = {
             }
 
             const result = await Promise.all(filtered_media.map(media => get_data(media)));
+    
+            res.status(200).json(result);
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Server error' });
+        }
+    },
+
+    async get_top_rated(req, res) {
+        try {
+            const all_media = await media_controller.get_all_media();
+            
+            // Получаем популярные фильмы и шоу
+            const popular_movies = await api_controller.get_popular_movies();
+            const popular_shows = await api_controller.get_popular_shows();
+    
+            // Сортируем фильмы и шоу по рейтингу
+            const sorted_movies = popular_movies.results.sort((a, b) => b.vote_average - a.vote_average);
+            const sorted_shows = popular_shows.results.sort((a, b) => b.vote_average - a.vote_average);
+    
+            // Выбираем первый фильм и шоу с наивысшим рейтингом
+            const top_movie = sorted_movies[0];
+            const top_show = sorted_shows[0];
+    
+            // Получаем соответствующие объекты из базы данных
+            const top_movie_data = all_media.find(media => media.tmdb_id === top_movie.id && media.type === 'Movie');
+            const top_show_data = all_media.find(media => media.tmdb_id === top_show.id && media.type === 'Show');
+    
+            const result = {
+                top_movie: top_movie_data || null,
+                top_show: top_show_data || null
+            };
     
             res.status(200).json(result);
         } catch (err) {

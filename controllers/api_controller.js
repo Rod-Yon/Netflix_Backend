@@ -58,7 +58,11 @@ const api_controller = {
 
     async get_show_cast(id) {
         return api_fetch(`tv/${id}/credits`);
-    }
+    },
+
+    async get_show_episodes(id) {
+        return api_fetch(`tv/${id}/season/1`);
+    },
 };
 
 module.exports = { api_controller };

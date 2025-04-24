@@ -18,7 +18,7 @@ api_router.get('/movies/new', async (req, res) => {
     res.json(data);
 });
 
-api_router.get('/movies/genres/:id', async (req, res) => {
+api_router.get('/movies/genres', async (req, res) => {
     const data = await api_controller.get_movies_genres(req.params.id);
     res.json(data);
 });
@@ -43,13 +43,18 @@ api_router.get('/shows/new', async (req, res) => {
     res.json(data);
 });
 
-api_router.get('/shows/genres/:id', async (req, res) => {
+api_router.get('/shows/genres', async (req, res) => {
     const data = await api_controller.get_shows_genres(req.params.id);
     res.json(data);
 });
 
 api_router.get('/shows/cast/:id', async (req, res) => {
     const data = await api_controller.get_show_cast(req.params.id);
+    res.json(data);
+});
+
+api_router.get('/shows/:id/episodes', async (req, res) => {
+    const data = await api_controller.get_show_episodes(req.params.id);
     res.json(data);
 });
 
