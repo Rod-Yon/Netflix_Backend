@@ -13,8 +13,8 @@ const endpoints = [
     { type: 'Show', category: 'top_rated', label: 'Top Rated Shows' },
     { type: 'Movie', category: 'popular', label: 'Popular Movies' },
     { type: 'Show', category: 'popular', label: 'Popular Shows' },
-    { type: 'Movie', category: 'now_playing', label: 'Newest Movies' },
-    { type: 'Show', category: 'airing_today', label: 'Newest Shows' }
+    { type: 'Movie', category: 'discover', label: 'Newest Movies' },
+    { type: 'Show', category: 'discover', label: 'Newest Shows' }
 ];
 
 async function fetchAndSaveMedia({ type, category }) {
@@ -24,7 +24,16 @@ async function fetchAndSaveMedia({ type, category }) {
 
     try {
         for (let page = 1; page <= pageLimit; page++) {
-            const url = `${BASE_URL}/${mediaType}/${category}?api_key=${TMDB_API_KEY}&language=en-US&page=${page}`;
+
+            let request_url;
+
+            if (category === 'discover') {
+                request_url = `${BASE_URL}/${category}/${mediaType}?api_key=${TMDB_API_KEY}&language=en-US&page=${page}&sort_by=first_air_date.desc&first_air_date.gte=2024-04-24&first_air_date.lte=2025-04-24`;
+            } else {
+                request_url = `${BASE_URL}/${mediaType}/${category}?api_key=${TMDB_API_KEY}&language=en-US&page=${page}`;
+            }
+
+            const url = request_url;
             const response = await fetch(url);
             const data = await response.json();
 
