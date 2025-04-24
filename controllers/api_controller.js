@@ -1,10 +1,17 @@
 const api_key = process.env.API_KEY;
-const api_url = 'https://api.themoviedb.org/3';
+const api_url = 'https://api.themoviedb.org/3/';
+const start_date = '2024-04-24';
+const end_date = '2025-04-24';
 
 const api_fetch = async (path, query = '') => {
-
+    const url = `${api_url}${path}?api_key=${api_key}&language=en-EN${query}`;
     const response = await fetch(`${api_url}${path}?api_key=${api_key}&language=en-EN${query}`);
+
     if (!response.ok) {
+        const errorText = await response.text(); // читаем тело ответа
+        console.error(`Failed fetch from ${url}`);
+        console.error(`Status: ${response.status} ${response.statusText}`);
+        console.error(`Response: ${errorText}`);
         throw new Error('API error');
     }
 
@@ -18,7 +25,7 @@ const api_controller = {
     },
 
     async get_newest_movies() {
-        return api_fetch(`movie/now_playing`);
+        return api_fetch('discover/movie', `&sort_by=primary_release_date.desc&primary_release_date.gte=${start_date}&primary_release_date.lte=${end_date}`);
     },
 
     async get_movies_genres() {
@@ -38,7 +45,7 @@ const api_controller = {
     },
 
     async get_newest_shows() {
-        return api_fetch(`tv/now_playing`);
+        return api_fetch('discover/tv', `&sort_by=first_air_date.desc&first_air_date.gte=${start_date}&first_air_date.lte=${end_date}`);
     },
 
     async get_shows_genres() {
