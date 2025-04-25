@@ -17,14 +17,21 @@ const { api_router } = require('./routers/api_router');
 
 const app = express();
 
+const corsOptions = {
+    origin: 'http://localhost:3000',
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
+app.use(cors(corsOptions));
+
+app.options('*', cors(corsOptions));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(logger('dev'));
 app.use(cookie_parser());
-app.use(cors({
-    origin: 'http://localhost:3000',
-    credentials: true
-}));
 
 // app.use((req, res, next) => {
 
