@@ -26,21 +26,21 @@ app.use(cors({
     credentials: true
 }));
 
-app.use((req, res, next) => {
+// app.use((req, res, next) => {
 
-    if (req.path == '/') return next();
+//     if (req.path == '/') return next();
 
-    const token = req.cookies?.token;
-    if (!token) return res.redirect('/');
+//     const token = req.cookies?.token;
+//     if (!token) return res.redirect('/');
 
-    try {
-        const decoded = jwt.verify(token, process.env.SECRET_KEY);
-        req.user = decoded;
-        next();
-    } catch {
-        return res.redirect('/');
-    }
-});
+//     try {
+//         const decoded = jwt.verify(token, process.env.SECRET_KEY);
+//         req.user = decoded;
+//         next();
+//     } catch {
+//         return res.redirect('/');
+//     }
+// });
 
 app.use('/', authorization_router);
 app.use('/profiles', profile_router);
