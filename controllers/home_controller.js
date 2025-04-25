@@ -86,6 +86,8 @@ const home_controller = {
 
     async get_top_ten(req, res) {
 
+        const type = req.params.type;
+
         try {
 
             const all_media = await media_controller.get_all_media();
@@ -100,7 +102,7 @@ const home_controller = {
 
             for (const item of all_media) {
 
-                if (movies_id.includes(item.tmdb_id) || shows_id.includes(item.tmdb_id)) {
+                if ((movies_id.includes(item.tmdb_id) && type != 'show' ) || ( shows_id.includes(item.tmdb_id) && type != 'movie' )) {
                     popular_media.push(item);
                 }
 
@@ -164,7 +166,7 @@ const home_controller = {
                     filtered_media.push(item);
                 }
     
-                if (filtered_media.length >= 10) break;
+                if (filtered_media.length >= 20) break;
             }
 
             const result = await Promise.all(filtered_media.map(media => get_data(media)));
